@@ -23,8 +23,6 @@ spec:
   template:
     metadata:
       name: "{{ $team }}-{{ printf "{{.name}}" }}"
-      annotations:
-        {{- toYaml .annotations | nindent 8 }}
     spec:
       project: default
       source:
@@ -43,4 +41,8 @@ spec:
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
+  templatePatch: |
+    metadata:
+      annotations:
+      {{ print "{{- toYaml .annotations | nindent 8 }}"}}
 {{- end }}

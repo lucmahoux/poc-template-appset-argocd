@@ -12,3 +12,4 @@ teams:
         argoName: billing-api
         annotations:
           custom.annotation.io/component: payment
+          custom.annotation.io/team: alpha
