@@ -17,9 +17,14 @@ spec:
                 - path: apps/sbx/{{ .name }}/*
           - list:
               elements:
+                {{- if .apps }}
                 {{- range $appName, $app := .apps }}
                 - appName: {{ $appName | quote }}
                   annotations: {{ $app.annotations | toJson }}
+                {{- end }}
+                {{- else }}
+                - appName: "{{ printf "{{.path.basename}}" }}"
+                  annotations: {}
                 {{- end }}
   template:
     metadata:
@@ -45,5 +50,5 @@ spec:
   templatePatch: |
     metadata:
       annotations:
-      {{ print "{{- toYaml .annotations | nindent 8 }}"}}
+      {{ printf "{{- toYaml .annotations | nindent 8 }}" }}
 {{- end }}
