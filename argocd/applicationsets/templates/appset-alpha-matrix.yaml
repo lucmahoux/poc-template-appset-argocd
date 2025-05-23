@@ -8,33 +8,34 @@ metadata:
 spec:
   goTemplate: true
   generators:
-    - list:
-        elements:
-{{- $team := .name }}
-{{- range .apps }}
-          - name: {{ .name }}
-            argoName: {{ .argoName }}
-            team: {{ $team }}
-            path: apps/sbx/{{ $team }}/{{ .name }}
-            namespace: sbx-{{ $team }}-{{ .name }}
-            annotations:
-{{ toYaml .annotations | indent 14 }}
-{{- end }}
+    - matrix:
+        generators:
+          - git:
+              repoURL: "{{ $.Values.repositoryUrl }}"
+              revision: "{{ $.Values.targetRevision }}"
+              directories:
+                - path: apps/sbx/{{ .name }}/*
+          - list:
+              elements:
+                {{- range $appName, $app := .apps }}
+                - appName: {{ $appName | quote }}
+                  annotations: {{ $app.annotations | toJson }}
+                {{- end }}
   template:
     metadata:
-      name: "{{ $team }}-{{ printf "{{.name}}" }}"
+      name: "{{ .name }}-{{ printf "{{.path.basename}}" }}"
     spec:
       project: default
       source:
         repoURL: "{{ $.Values.repositoryUrl }}"
         targetRevision: "{{ $.Values.targetRevision }}"
-        path: "{{ printf "{{.path }}"}}"
+        path: "apps/sbx/{{ .name }}/{{ printf "{{.path.basename}}" }}"
         helm:
           valueFiles:
             - values.yaml
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{ .namespace }}"
+        namespace: "sbx-{{ .name }}-{{ printf "{{.path.basename}}" }}"
       syncPolicy:
         automated:
           prune: true

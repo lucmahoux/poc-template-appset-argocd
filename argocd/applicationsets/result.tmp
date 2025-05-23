@@ -1,0 +1,92 @@
+---
+# Source: appset-alpha/templates/appset-alpha-matrix.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: appset-alpha
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: "git@github.com:lucmahoux/poc-template-appset-argocd.git"
+              revision: "main"
+              directories:
+                - path: apps/sbx/alpha/*
+          - list:
+              elements:
+                - appName: "billing"
+                  annotations: {"custom.annotation.io/component":"payment","custom.annotation.io/team":"alpha"}
+                - appName: "webapp"
+                  annotations: {"custom.annotation.io/component":"web"}
+  template:
+    metadata:
+      name: "alpha-{{.path.basename}}"
+    spec:
+      project: default
+      source:
+        repoURL: "git@github.com:lucmahoux/poc-template-appset-argocd.git"
+        targetRevision: "main"
+        path: "apps/sbx/alpha/{{.path.basename}}"
+        helm:
+          valueFiles:
+            - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "sbx-alpha-{{.path.basename}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  templatePatch: |
+    metadata:
+      annotations:
+      {{- toYaml .annotations | nindent 8 }}
+---
+# Source: appset-alpha/templates/appset-alpha-matrix.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: appset-beta
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: "git@github.com:lucmahoux/poc-template-appset-argocd.git"
+              revision: "main"
+              directories:
+                - path: apps/sbx/beta/*
+          - list:
+              elements:
+  template:
+    metadata:
+      name: "beta-{{.path.basename}}"
+    spec:
+      project: default
+      source:
+        repoURL: "git@github.com:lucmahoux/poc-template-appset-argocd.git"
+        targetRevision: "main"
+        path: "apps/sbx/beta/{{.path.basename}}"
+        helm:
+          valueFiles:
+            - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "sbx-beta-{{.path.basename}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  templatePatch: |
+    metadata:
+      annotations:
+      {{- toYaml .annotations | nindent 8 }}

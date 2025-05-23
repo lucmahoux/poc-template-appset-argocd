@@ -4,12 +4,12 @@ targetRevision: main
 teams:
   - name: alpha
     apps:
-      - name: webapp
-        argoName: frontend
+      webapp:
         annotations:
           custom.annotation.io/component: web
-      - name: billing
-        argoName: billing-api
+      billing:
         annotations:
           custom.annotation.io/component: payment
           custom.annotation.io/team: alpha
+  - name: beta
+    apps: {}
