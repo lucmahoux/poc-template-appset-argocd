@@ -30,7 +30,7 @@ spec:
       source:
         repoURL: "{{ $.Values.repositoryUrl }}"
         targetRevision: "{{ $.Values.targetRevision }}"
-        path: "apps/dev/{{ $team }}/{{ printf "{{.path }}"}}"
+        path: "{{ printf "{{.path }}"}}"
         helm:
           valueFiles:
             - values.yaml
