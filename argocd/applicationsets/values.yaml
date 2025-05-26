@@ -2,7 +2,7 @@ repositoryUrl: git@github.com:lucmahoux/poc-template-appset-argocd.git
 targetRevision: main
 
 teams:
-  - name: annotation
+  - name: annotations
     apps:
       webapp:
         annotations:
