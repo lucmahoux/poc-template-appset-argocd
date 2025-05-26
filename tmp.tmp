@@ -9,19 +9,11 @@ metadata:
 spec:
   goTemplate: true
   generators:
-    - matrix:
-        generators:
-          - git:
-              repoURL: "{{ $.Values.repositoryUrl }}"
-              revision: "{{ $.Values.targetRevision }}"
-              directories:
-                - path: apps/sbx/{{ $team }}/*
-          - list:
-              elements:
-                - apps:
-                  {{- with .apps }}
-                  {{- toYaml . | nindent 20 }}
-                  {{- end }}
+    - git:
+        repoURL: "{{ $.Values.repositoryUrl }}"
+        revision: "{{ $.Values.targetRevision }}"
+        directories:
+          - path: apps/sbx/{{ $team }}/*
   template:
     metadata:
       name: "{{ $team }}-{{ printf "{{.path.basename}}" }}"
@@ -44,12 +36,10 @@ spec:
         syncOptions:
           - CreateNamespace=true
   templatePatch: |
-    {{`{{- $appName := printf "%s" .path.basename }}`}}
-    {{ printf "{{- if hasKey .apps $appName }}" }}
+    {{ printf "{{- if hasKey .apps .path.basename }}" }}
     metadata:
       annotations:
-      {{- printf "{{ with index .apps $appName }}" }}
-      {{- printf "{{ toYaml .annotations | nindent 6 }}" }}
-      {{- printf "{{ end }}" }} 
+        custom.annotation.io/team: test
+      {{ printf "{{- toYaml (index .apps .path.basename).annotations | nindent 8 }}" }}
     {{ printf "{{- end }}" }}
 {{- end }}

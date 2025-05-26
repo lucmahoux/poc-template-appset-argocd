@@ -1,5 +1,4 @@
 {{- range .Values.teams }}
-{{ $team := .name }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -15,28 +14,33 @@ spec:
               repoURL: "{{ $.Values.repositoryUrl }}"
               revision: "{{ $.Values.targetRevision }}"
               directories:
-                - path: apps/sbx/{{ $team }}/*
+                - path: apps/sbx/{{ .name }}/*
           - list:
               elements:
-                - apps:
-                  {{- with .apps }}
-                  {{- toYaml . | nindent 20 }}
-                  {{- end }}
+                {{- if .apps }}
+                {{- range $appName, $app := .apps }}
+                - appName: {{ $appName | quote }}
+                  annotations: {{ $app.annotations | toJson }}
+                {{- end }}
+                {{- else }}
+                - appName: "{{ printf "{{.path.basename}}" }}"
+                  annotations: {}
+                {{- end }}
   template:
     metadata:
-      name: "{{ $team }}-{{ printf "{{.path.basename}}" }}"
+      name: "{{ .name }}-{{ printf "{{.path.basename}}" }}"
     spec:
       project: default
       source:
         repoURL: "{{ $.Values.repositoryUrl }}"
         targetRevision: "{{ $.Values.targetRevision }}"
-        path: "apps/sbx/{{ $team }}/{{ printf "{{.path.basename}}" }}"
+        path: "apps/sbx/{{ .name }}/{{ printf "{{.path.basename}}" }}"
         helm:
           valueFiles:
             - values.yaml
       destination:
         server: https://kubernetes.default.svc
-        namespace: "sbx-{{ $team }}-{{ printf "{{.path.basename}}" }}"
+        namespace: "sbx-{{ .name }}-{{ printf "{{.path.basename}}" }}"
       syncPolicy:
         automated:
           prune: true
@@ -44,12 +48,9 @@ spec:
         syncOptions:
           - CreateNamespace=true
   templatePatch: |
-    {{`{{- $appName := printf "%s" .path.basename }}`}}
-    {{ printf "{{- if hasKey .apps $appName }}" }}
     metadata:
       annotations:
-      {{- printf "{{ with index .apps $appName }}" }}
-      {{- printf "{{ toYaml .annotations | nindent 6 }}" }}
-      {{- printf "{{ end }}" }} 
-    {{ printf "{{- end }}" }}
+      {{ printf "{{- if eq .path.basename .appName }}" }}
+      {{ printf "{{- toYaml .annotations | nindent 8 }}" }}
+      {{ printf "{{- end }}" }}
 {{- end }}

@@ -1,0 +1,3 @@
+{"applicationset":{"Namespace":"argocd","Name":"appset-alpha"},"level":"error","msg":"unable to generate applications: error replacing values in templatePatch: failed to execute go template 
+{{- if hasKey .apps .path.basename }}\nmetadata:\n  annotations:\n    custom.annotation.io/team: test\n  {{- toYaml (index .apps .path.basename).annotations | nindent 8 }}\n{{- end }}\n: template: :1:25: executing 
+\"\" at \u003c.path.basename\u003e: invalid value; expected string","time":"2025-05-26T13:15:15Z"}
