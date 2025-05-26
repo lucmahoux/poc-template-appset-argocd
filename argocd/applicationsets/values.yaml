@@ -13,3 +13,9 @@ teams:
           custom.annotation.io/team: alpha
   - name: no-annotations
     apps: {}
+  - name: mixed
+    apps:
+      billing:
+        annotations:
+          custom.annotation.io/component: payment
+          custom.annotation.io/team: mixed
