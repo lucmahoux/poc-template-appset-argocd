@@ -6,7 +6,14 @@ teams:
     apps:
       webapp:
         annotations:
-          custom.annotation.io/component: web
+          custom.annotation.io/component: webapp
+          argocd-image-updater.argoproj.io/image-list: nginximage=loibinomiale/nginx
+          argocd-image-updater.argoproj.io/nginximage.update-strategy: latest
+          argocd-image-updater.argoproj.io/write-back-method: git
+          argocd-image-updater.argoproj.io/git-branch: main
+          argocd-image-updater.argoproj.io/nginximage.helm.image-name: image.repository
+          argocd-image-updater.argoproj.io/nginximage.helm.image-tag: image.tag
+          argocd-image-updater.argoproj.io/nginximage.allow-tags: regexp:^sha-[0-9a-f]{7}$
       billing:
         annotations:
           custom.annotation.io/component: payment
