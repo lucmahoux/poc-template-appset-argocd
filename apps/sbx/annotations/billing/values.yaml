@@ -1,7 +1,7 @@
 image:
   repository: loibinomiale/nginx
-  tag: v1.0.0
+  tag: v1.4.0
 
 sidecarImage:
   repository: loibinomiale/hello-world
-  tag: v1.0.0
+  tag: v2.0.0
