@@ -16,8 +16,21 @@ teams:
           argocd-image-updater.argoproj.io/webapp.allow-tags: regexp:^sha-[0-9a-f]{7}$
       billing:
         annotations:
-          custom.annotation.io/component: payment
-          custom.annotation.io/team: alpha
+          argocd-image-updater.argoproj.io/image-list: |
+            webapp=loibinomiale/nginx
+            sidecar=loibinomiale/hello-world
+
+          argocd-image-updater.argoproj.io/webapp.helm.image-name: image.repository
+          argocd-image-updater.argoproj.io/webapp.helm.image-tag: image.tag
+          argocd-image-updater.argoproj.io/webapp.allow-tags: regexp:^rc-.*$
+          argocd-image-updater.argoproj.io/webapp.update-strategy: newest-build
+
+          argocd-image-updater.argoproj.io/sidecar.helm.image-name: sidecarImage.repository
+          argocd-image-updater.argoproj.io/sidecar.helm.image-tag: sidecarImage.tag
+          argocd-image-updater.argoproj.io/sidecar.allow-tags: regexp:^v.*$
+          argocd-image-updater.argoproj.io/sidecar.update-strategy: newest-build
+
+    argocd-image-updater.argoproj.io/write-back-method: git
   - name: no-annotations
     apps: {}
   - name: mixed

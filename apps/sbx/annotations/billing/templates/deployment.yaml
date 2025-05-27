@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing
+  template:
+    metadata:
+      labels:
+        app: billing
+    spec:
+      containers:
+        - name: billing
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        - name: sidecar
+          image: {{ .Values.sidecarImage.repository }}:{{ .Values.sidecarImage.tag }}
