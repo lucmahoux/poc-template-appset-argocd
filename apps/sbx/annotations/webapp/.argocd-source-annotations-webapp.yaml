@@ -4,5 +4,5 @@ helm:
     value: loibinomiale/nginx
     forcestring: true
   - name: image.tag
-    value: sha-test123
+    value: sha-zzzzzz
     forcestring: true
