@@ -10,5 +10,5 @@ helm:
     value: loibinomiale/hello-world
     forcestring: true
   - name: sidecarImage.tag
-    value: v2.3.0
+    value: v2.4.0
     forcestring: true
