@@ -1,0 +1,14 @@
+helm:
+  parameters:
+  - name: image.repository
+    value: loibinomiale/nginx
+    forcestring: true
+  - name: image.tag
+    value: rc-2
+    forcestring: true
+  - name: sidecarImage.repository
+    value: loibinomiale/hello-world
+    forcestring: true
+  - name: sidecarImage.tag
+    value: v2.3.0
+    forcestring: true
