@@ -4,11 +4,11 @@ helm:
     value: loibinomiale/nginx
     forcestring: true
   - name: image.tag
-    value: rc-12.2.5
+    value: rc-12.2.6
     forcestring: true
   - name: sidecarImage.repository
     value: loibinomiale/hello-world
     forcestring: true
   - name: sidecarImage.tag
-    value: v8.4.1
+    value: v8.4.2
     forcestring: true
